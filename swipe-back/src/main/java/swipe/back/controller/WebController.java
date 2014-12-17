@@ -84,14 +84,14 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, name="/problems/{id}/solutions")
-	@ResponseBody Collection<Solution> getSolutionsForProblem(@PathVariable long id){
+	@ResponseBody Collection<Solution> getSolutionsForProblem(@PathVariable("id") long id){
 		//TODO : récupérer les solutions correspondant au probleme
 		System.out.println("Get solutions for problem");
 		return new ArrayList<Solution>();
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, name="/problems/{id}/solutions")
-	@ResponseBody void createSolutionForProblem(@PathVariable long id){
+	@ResponseBody void createSolutionForProblem(@PathVariable("id") long id){
 		//TODO : créer une solution pour le probleme correspondant
 		System.out.println("Create solution for problem");
 	}
@@ -123,14 +123,14 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, name="/versus/{id}/comments")
-	@ResponseBody Collection<Comment> getCommentsForVersus(@PathVariable long id){
+	@ResponseBody Collection<Comment> getCommentsForVersus(@PathVariable Long id){
 		System.out.println("Get comments for versus");
 		//TODO : récupérer les commentaires pour le versus
 		return new ArrayList<Comment>();
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, name="/versus/{id}/comments")
-	@ResponseBody void createCommentForVersus(@PathVariable long id){
+	@ResponseBody void createCommentForVersus(@PathVariable Long id){
 		System.out.println("Post comment for versus");
 		//TODO : créer un commentaire pour le versus
 	}

@@ -24,11 +24,11 @@ public class WebController {
 	@RequestMapping("/test")
 	@ResponseBody
     String test() {
-		User u = new User(123, "toto","toto");
-		u.setPassword("password");
-		u.setUsername("toto");
+		User u = new User(1234, "toto2","toto2");
+		//u.setPassword("password");
+		//u.setUsername("toto");
 		userRepository.save(u);
 		//problemRepository.save(new Problem(123, "toto", "toto"));
-        return "Hello World!";
+        return "Hello World2!";
     }
 }

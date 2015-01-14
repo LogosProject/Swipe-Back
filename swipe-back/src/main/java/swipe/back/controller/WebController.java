@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import swipe.back.dao.ProblemRepository;
 import swipe.back.dao.UserRepository;
@@ -63,10 +66,10 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/user")
-	void createUser(@RequestParam(value="id", required=true) String id){
+	@ResponseBody boolean createUser(@RequestParam(value="id", required=true) String id){
 		System.out.println("Post user");
-		this.userServices.createUser(id); //l'id n'est pas l'id metier mais l'email
-		//TODO : créer u utilisaterur si utilisateur inexistant, ne rien faire si non (? ou mettre à jour ?)
+		return this.userServices.createUser(id);
+		//l'id n'est pas l'id metier mais l'email
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems")

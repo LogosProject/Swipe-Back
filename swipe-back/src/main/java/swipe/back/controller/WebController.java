@@ -66,12 +66,10 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/user")
-	/*@ResponseStatus( value=HttpStatus.OK ) */ void createUser(@RequestParam(value="id", required=true) String id, HttpServletResponse response){
+	@ResponseBody boolean createUser(@RequestParam(value="id", required=true) String id){
 		System.out.println("Post user");
-		this.userServices.createUser(id); //l'id n'est pas l'id metier mais l'email
-		//TODO : créer u utilisaterur si utilisateur inexistant, ne rien faire si non (? ou mettre à jour ?)
-		response.setStatus(200); //TODO : trouver la bonne annotation pour faire ça
-		//return "ok";
+		return this.userServices.createUser(id);
+		//l'id n'est pas l'id metier mais l'email
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems")

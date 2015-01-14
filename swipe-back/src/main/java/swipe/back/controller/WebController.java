@@ -44,27 +44,27 @@ public class WebController {
     }
 	
 	@RequestMapping(method=RequestMethod.GET, name="/user")
-	@ResponseBody User getUser(@RequestParam("id") long id){
+	@ResponseBody User getUser(@RequestParam(value= "id", required=true) long id){
 		//TODO : récupérer un utilisateur
 		System.out.println("Get user");
 		return new User(123,"toto", "toto");
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, name="/user")
-	void createUser(@RequestParam("id") long id){
+	void createUser(@RequestParam(value="id", required=true) long id){
 		System.out.println("Post user");
 		//TODO : créer u utilisaterur si utilisateur inexistant, ne rien faire si non (? ou mettre à jour ?)
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, name="/problems")
-	@ResponseBody Problem  getProblem(@RequestParam("id") long id){
+	@ResponseBody Problem  getProblem(@RequestParam(value="id", required = true) long id){
 		//TODO : récupérer une problematique
 		System.out.println("Get problems");
 		return new Problem(123,"toto", "toto");
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, name="/problems")
-	@ResponseBody void  createProblem(@RequestParam("id") long id){
+	@ResponseBody void  createProblem(@RequestParam(value = "id", required = true) long id){
 		System.out.println("Post problems");
 		//TODO : créer une problématique
 		

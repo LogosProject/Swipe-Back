@@ -11,6 +11,6 @@ import swipe.back.domain.VersusResponse;
 public interface VersusResponseRepository extends CrudRepository<VersusResponse, Long> {
 
 	Iterable<VersusResponse> findForUserAndProblem(
-			User user, Problem problem);
+		User user, Problem problem);
 
 }

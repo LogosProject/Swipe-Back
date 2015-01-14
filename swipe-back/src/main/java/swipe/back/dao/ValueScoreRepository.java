@@ -5,12 +5,13 @@ import org.springframework.stereotype.Repository;
 
 import swipe.back.domain.Problem;
 import swipe.back.domain.User;
+import swipe.back.domain.Value;
 import swipe.back.domain.ValueScore;
 
 @Repository
 public interface ValueScoreRepository extends CrudRepository<ValueScore, Long> {
 
-	Iterable<ValueScore> findForUserAndProblem(User user,
-			Problem problem);
+
+	ValueScore findByUserAndValue(User user, Value value);
 
 }

@@ -1,10 +1,15 @@
 package swipe.back.services;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import swipe.back.dao.ProblemRepository;
+import swipe.back.dao.ValueRepository;
 import swipe.back.dao.ValueScoreRepository;
 import swipe.back.dao.ValueSolutionScoreRepository;
+import swipe.back.dao.VersusRepository;
 import swipe.back.dao.VersusResponseRepository;
 import swipe.back.domain.Problem;
 import swipe.back.domain.Solution;
@@ -26,6 +31,15 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	@Autowired
 	ValueScoreRepository valueScoreRepository;
 	
+	@Autowired
+	VersusRepository versusRepository;
+	
+	@Autowired
+	ProblemRepository problemRepository;
+	
+	@Autowired
+	ValueRepository valueRepository;
+	
 	@Override
 	public double calculateScore(ValueSolutionScore valueSolutionScore) {
 		// TODO Auto-generated method stub
@@ -36,9 +50,15 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	public Iterable<ValueSolutionScore> createValueSolutionScores(
 			Problem problem, User user) {
 	
-		Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
-		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
-	
+		//Iterable<ValueScore> valueScores = valueScoreRepository.findByUserAndProblem(user, problem);
+		//Iterable<Versus> versusList = this.versusRepository.findByProblem(problem);
+		//Iterable<VersusResponse> versusResponses = versusResponseRepository.findByUserAndVersusIn(user, versusList);
+		List<ValueScore> valueScores = new ArrayList<ValueScore>();
+		for ( Value value : problem.getValues()){
+			valueScores.add(this.valueScoreRepository.findByUserAndValue(user, value));
+		}
+		Iterable<Versus> versuses = (Iterable<Versus>) this.versusRepository.findByProblem(problem);
+		Iterable<VersusResponse> versusResponses = this.versusResponseRepository.findByUserAndVersusIn(user, versuses);
 		for (ValueScore valueScore : valueScores) {
 			Value value = valueScore.getValue();
 			for(VersusResponse versusResponse : versusResponses) {

@@ -14,5 +14,12 @@ public interface ISolutionScoreService {
 	 */
 	public double calculateScore(SolutionScore solutionScore);
 	
+	/**
+	 * Crée ou modifie tous les solutionScore d'un utilisateur donné
+	 * @param problem
+	 * @param user
+	 * @return
+	 */
+	public Iterable<SolutionScore> createSolutionScores(Problem problem, User user);
 
 }

@@ -2,7 +2,7 @@ package swipe.back.services;
 
 import swipe.back.domain.User;
 
-public interface IUserServices {
+public interface IUserService {
 
 	/**
 	 * Cherche un utilisateur par son id

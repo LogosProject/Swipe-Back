@@ -26,7 +26,7 @@ import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
 import swipe.back.domain.VersusResponse;
-import swipe.back.services.IUserServices;
+import swipe.back.services.IUserService;
 
 //@EnableAutoConfiguration
 @Controller
@@ -39,7 +39,7 @@ public class WebController {
 	ProblemRepository problemRepository;
 	
 	@Autowired
-	IUserServices userServices;
+	IUserService userServices;
 	
 	/*@RequestMapping("/test")
 	@ResponseBody

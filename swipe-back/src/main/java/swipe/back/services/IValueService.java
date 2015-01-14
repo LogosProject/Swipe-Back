@@ -1,5 +1,5 @@
 package swipe.back.services;
 
-public interface IVersusServices {
+public interface IValueService {
 
 }

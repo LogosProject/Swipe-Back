@@ -1,5 +1,7 @@
 package swipe.back.services;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import swipe.back.dao.SolutionRepository;
@@ -37,8 +39,8 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 		for(Solution solution : solutions) {
 			
 		}
-		
-		Iterable<ValueSolutionScore> valueSolutionScore = new Iterable<ValueSolutionScore>();
+
+		Iterable<ValueSolutionScore> valueSolutionScore = new ArrayList<ValueSolutionScore>();
 		
 		return valueSolutionScore;
 	}

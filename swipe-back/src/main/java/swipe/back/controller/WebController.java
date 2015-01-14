@@ -23,6 +23,7 @@ import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
 import swipe.back.domain.VersusResponse;
+import swipe.back.services.IUserServices;
 
 //@EnableAutoConfiguration
 @Controller
@@ -34,7 +35,10 @@ public class WebController {
 	@Autowired
 	ProblemRepository problemRepository;
 	
-	@RequestMapping("/test")
+	@Autowired
+	IUserServices userServices;
+	
+	/*@RequestMapping("/test")
 	@ResponseBody
     String test() {
 		User u = new User(1234, "toto2","toto2");
@@ -43,18 +47,25 @@ public class WebController {
 		userRepository.save(u);
 		//problemRepository.save(new Problem(123, "toto", "toto"));
         return "Hello World2!";
-    }
+    }*/
 	
 	@RequestMapping(method=RequestMethod.GET, value="/user")
 	@ResponseBody User getUser(@RequestParam(value= "id", required=true) long id){
 		//TODO : récupérer un utilisateur
-		System.out.println("Get user");
-		return new User(123,"toto", "toto");
+		System.out.println("Get user "+id);
+		User user = this.userServices.getUserById(id);
+		if ( user != null ){
+			return user;
+		}
+		else{
+			return new User(); //TODO : faire un vrai message d'erreur
+		}
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/user")
-	void createUser(@RequestParam(value="id", required=true) long id){
+	void createUser(@RequestParam(value="id", required=true) String id){
 		System.out.println("Post user");
+		this.userServices.createUser(id); //l'id n'est pas l'id metier mais l'email
 		//TODO : créer u utilisaterur si utilisateur inexistant, ne rien faire si non (? ou mettre à jour ?)
 	}
 	

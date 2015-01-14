@@ -9,11 +9,4 @@ import swipe.back.domain.User;
 
 @Repository
 public interface SolutionRepository extends CrudRepository<Solution, Long> {
-
-	/**
-	 * Renvoie toutes les solutions d'un problem pour lesquelles il existe un solutionScore appartenant à l'user.
-	 * @param user
-	 * @return
-	 */
-	public Iterable<Solution> findForUserAndProblem(User user, Problem problem);
 }

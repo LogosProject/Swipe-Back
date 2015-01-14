@@ -8,4 +8,6 @@ import swipe.back.domain.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
+	public User findByEmail(String email);
+
 }

@@ -1,5 +1,5 @@
 package swipe.back.services;
 
-public interface IProblemServices {
+public interface ICommentService {
 
 }

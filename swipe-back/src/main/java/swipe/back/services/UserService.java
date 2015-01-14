@@ -8,7 +8,7 @@ import swipe.back.domain.User;
 
 
 @Service
-public class UserServices implements IUserServices {
+public class UserService implements IUserService {
 	
 	@Autowired
 	UserRepository userRepository;

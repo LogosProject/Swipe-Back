@@ -20,7 +20,7 @@ public class Comment {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
-	private String title;
+	private String name;
 	private DateTime dateTime; 
 	private String content;
 	@OneToOne
@@ -38,7 +38,7 @@ public class Comment {
 			Versus versus, User user, Comment comment) {
 		super();
 		this.id = id;
-		this.title = title;
+		this.name = title;
 		this.dateTime = dateTime;
 		this.content = content;
 		this.versus = versus;

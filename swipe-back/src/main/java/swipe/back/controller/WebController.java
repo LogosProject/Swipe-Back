@@ -26,6 +26,7 @@ import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
 import swipe.back.domain.VersusResponse;
+import swipe.back.services.IProblemService;
 import swipe.back.services.IUserService;
 
 //@EnableAutoConfiguration
@@ -40,6 +41,9 @@ public class WebController {
 	
 	@Autowired
 	IUserService userServices;
+	
+	@Autowired
+	IProblemService problemService;
 	
 	/*@RequestMapping("/test")
 	@ResponseBody
@@ -73,16 +77,17 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems")
-	@ResponseBody Problem  getProblem(@RequestParam(value="id", required = true) long id){
-		//TODO : récupérer une problematique
+	@ResponseBody Iterable<Problem>  getProblem(){
 		System.out.println("Get problems");
-		return new Problem(123,"toto", "toto");
+		return this.problemService.getAllProblems();
+
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/problems")
-	@ResponseBody void  createProblem(@RequestParam(value = "id", required = true) long id){
+	@ResponseBody boolean  createProblem(@RequestParam(value = "name", required = true) String name, 
+			@RequestParam(value = "description", required = true)String description){
 		System.out.println("Post problems");
-		//TODO : créer une problématique
+		return this.problemService.createProblem(name, description);
 		
 	}
 	

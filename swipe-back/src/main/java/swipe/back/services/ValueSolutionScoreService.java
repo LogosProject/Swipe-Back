@@ -42,23 +42,22 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	@Override
 	public double calculateScore(ValueSolutionScore valueSolutionScore) {
-		// TODO Auto-generated method stub
-		return 0;
+		double score = -1;
+		
+		// TODO Code métier		
+		
+		valueSolutionScore.setScore(score);
+		return score;
 	}
 	
 	@Override
 	public Iterable<ValueSolutionScore> createValueSolutionScores(
 			Problem problem, User user) {
 	
-		//Iterable<ValueScore> valueScores = valueScoreRepository.findByUserAndProblem(user, problem);
-		//Iterable<Versus> versusList = this.versusRepository.findByProblem(problem);
-		//Iterable<VersusResponse> versusResponses = versusResponseRepository.findByUserAndVersusIn(user, versusList);
-		List<ValueScore> valueScores = new ArrayList<ValueScore>();
-		for ( Value value : problem.getValues()){
-			valueScores.add(this.valueScoreRepository.findByUserAndValue(user, value));
-		}
-		Iterable<Versus> versuses = (Iterable<Versus>) this.versusRepository.findByProblem(problem);
-		Iterable<VersusResponse> versusResponses = this.versusResponseRepository.findByUserAndVersusIn(user, versuses);
+		Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
+		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
+		ArrayList<ValueSolutionScore> valueSolutionScores = new ArrayList<ValueSolutionScore>();
+
 		for (ValueScore valueScore : valueScores) {
 			Value value = valueScore.getValue();
 			for(VersusResponse versusResponse : versusResponses) {
@@ -68,21 +67,15 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 				
 				calculateScore(valueSolutionScore1);
 				calculateScore(valueSolutionScore2);
+				
+				valueSolutionScores.add(valueSolutionScore1);
+				valueSolutionScores.add(valueSolutionScore2);
 			}
 		}
 		
-		ArrayList<ValueSolutionScore> valueSolutionScore = new ArrayList<ValueSolutionScore>();
-		
-		return valueSolutionScore;
+		return valueSolutionScores;
 	}
 	
-	/**
-	 * Retourne la ValueSolutionScore correspondant aux paramètres d'entrée. En crée une si elle n'en trouve pas.
-	 * @param user
-	 * @param value
-	 * @param Solution
-	 * @return
-	 */
 	public ValueSolutionScore getOrCreateValueSolutionScore(User user, Value value, Solution solution) {
 		
 		ValueSolutionScore valueSolutionScore = valueSolutionScoreRepository.findByUserAndValueAndSolution(user, value, solution);

@@ -54,7 +54,13 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	public Iterable<ValueSolutionScore> createValueSolutionScores(
 			Problem problem, User user) {
 	
-		Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
+		//Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
+		
+		Iterable<Value> values = problem.getValues();
+		Iterable<ValueScore> valueScores = new ArrayList<ValueScore>();
+		for (Value value : values ){
+			((ArrayList<ValueScore>) valueScores).add(valueScoreRepository.findByUserAndValue(user, value));
+		}
 		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
 		ArrayList<ValueSolutionScore> valueSolutionScores = new ArrayList<ValueSolutionScore>();
 

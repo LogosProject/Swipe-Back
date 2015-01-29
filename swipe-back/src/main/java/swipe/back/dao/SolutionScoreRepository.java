@@ -13,7 +13,7 @@ import swipe.back.domain.VersusResponse;
 @Repository
 public interface SolutionScoreRepository extends CrudRepository<SolutionScore, Long> {
 
-	@Query("SELECT ss FROM SolutionScore vr WHERE ss.user = :user AND ss.solution IN (SELECT s.id from solution s WHERE s.problem = :problem)")
+	@Query("SELECT vr FROM SolutionScore vr WHERE vr.user = :user AND vr.solution IN (SELECT s.id from Solution s WHERE s.problem = :problem)")
 	Iterable<SolutionScore> findForUserAndProblem(
 			@Param("user") User user, @Param("problem") Problem problem);
 }

@@ -1,10 +1,13 @@
 package swipe.back.services;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import swipe.back.dao.ProblemRepository;
 import swipe.back.domain.Problem;
+import swipe.back.domain.Value;
 
 @Service
 public class ProblemService implements IProblemService {
@@ -31,6 +34,24 @@ public class ProblemService implements IProblemService {
 			return false;
 		}
 	}
+
+	@Override
+	public Iterable<Value> getValuesForProblem(long problemId) {
+		Problem problem = this.problemRepository.findOne(problemId);
+		return problem.getValues();
+	}
+
+	@Override
+	public Value AddValue(long problemId, Value value) {
+		Problem problem = this.problemRepository.findOne(problemId);
+		Collection<Value>values = problem.getValues();
+		values.add(value);
+		problem.setValues(values);
+		this.problemRepository.save(problem);
+		return value;
+	}
+
+
 
 }
 

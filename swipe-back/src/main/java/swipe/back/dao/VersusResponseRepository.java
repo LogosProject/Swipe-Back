@@ -15,7 +15,7 @@ import swipe.back.domain.VersusResponse;
 @Repository
 public interface VersusResponseRepository extends CrudRepository<VersusResponse, Long> {
 
-	@Query("SELECT vr FROM VersusResponse vr WHERE vr.user = :user AND vr.versus IN (SELECT ve.id from versus ve WHERE ve.problem = :problem)")
+	@Query("SELECT vr FROM VersusResponse vr WHERE vr.user = :user AND vr.versus IN (SELECT ve.id from Versus ve WHERE ve.problem = :problem)")
 	Iterable<VersusResponse> findForUserAndProblem(
 			@Param("user") User user, @Param("problem") Problem problem);
 

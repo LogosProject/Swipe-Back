@@ -1,5 +1,8 @@
 package swipe.back.services;
 
+import java.util.Collection;
+
+import swipe.back.domain.Problem;
 import swipe.back.domain.Solution;
 import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
@@ -32,5 +35,9 @@ public interface ISolutionService {
 	 * @return
 	 */
 	public SolutionScore createSolutionScore(Solution solution, User user);
+	
+	public Collection<Solution> getSolutionsForProblem(Problem p);
+	
+	public Solution createSolution (String name, String description, Problem problem);
 	
 }

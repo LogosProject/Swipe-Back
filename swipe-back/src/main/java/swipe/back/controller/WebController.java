@@ -3,11 +3,17 @@ package swipe.back.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+
+
+
+
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,16 +25,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import swipe.back.dao.ProblemRepository;
 import swipe.back.dao.UserRepository;
+import swipe.back.dao.ValueRepository;
+import swipe.back.dao.VersusRepository;
 import swipe.back.domain.Comment;
 import swipe.back.domain.Problem;
 import swipe.back.domain.Solution;
 import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
+import swipe.back.domain.ValueScore;
+import swipe.back.domain.Versus;
 import swipe.back.domain.VersusResponse;
+import swipe.back.services.ICommentService;
 import swipe.back.services.IProblemService;
 import swipe.back.services.ISolutionScoreService;
+import swipe.back.services.ISolutionService;
 import swipe.back.services.IUserService;
+import swipe.back.services.IValueScoreService;
+import swipe.back.services.IValueService;
+import swipe.back.services.IVersusResponseService;
 
 //@EnableAutoConfiguration
 @Controller
@@ -49,28 +64,37 @@ public class WebController {
 	@Autowired
 	ISolutionScoreService solutionScoreService;
 	
-	/*@RequestMapping("/test")
+	@Autowired
+	IValueService valueService;
+	
+	@Autowired
+	ISolutionService solutionService;
+	
+	@Autowired
+	IValueScoreService valueScoreService;
+	
+	@Autowired
+	ValueRepository valueRepository;
+	
+	@Autowired
+	IVersusResponseService versusResponseService;
+	
+	@Autowired
+	VersusRepository versusRepository;
+	
+	@Autowired
+	ICommentService commentService;
+	
+	@RequestMapping("/")
 	@ResponseBody
     String test() {
-		User u = new User(1234, "toto2","toto2");
-		//u.setPassword("password");
-		//u.setUsername("toto");
-		userRepository.save(u);
-		//problemRepository.save(new Problem(123, "toto", "toto"));
+		
         return "Hello World2!";
-    }*/
+    }
 	
 	@RequestMapping(method=RequestMethod.GET, value="/user")
 	@ResponseBody User getUser(@RequestParam(value= "id", required=true) long id){
-		//TODO : récupérer un utilisateur
-		System.out.println("Get user "+id);
-		User user = this.userServices.getUserById(id);
-		if ( user != null ){
-			return user;
-		}
-		else{
-			return new User(); //TODO : faire un vrai message d'erreur
-		}
+		return this.userRepository.findOne(id);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/user")
@@ -97,16 +121,15 @@ public class WebController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id:[\\d]+}/values")
 	@ResponseBody Collection<Value> getValuesForProblem(@PathVariable("id") long id){
-		//TODO : récupérer les valeurs correspondant au probleme
-		System.out.println("Get values for problem");
-		return new ArrayList<Value>();
+		return (Collection<Value>) this.problemService.getValuesForProblem(id);
 	}
 	
 	     
 	@RequestMapping(method=RequestMethod.POST, value="/problems/{id}/values")
-	@ResponseBody void createValueForProblem(@PathVariable("id") long id){
+	@ResponseBody Value createValueForProblem(@PathVariable("id") long id, @RequestParam("name") String name, @RequestParam("description") String description){
 		System.out.println("Post value for problem");
-		//TODO : créer une valeur pour le probleme correspondant
+		Value value = this.valueService.createValue(name, description);
+		return this.problemService.AddValue(id, value);
 	}
 	
 	
@@ -114,21 +137,25 @@ public class WebController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id:[\\d]+}/solutions")
 	@ResponseBody Collection<Solution> getSolutionsForProblem(@PathVariable("id") long id){
-		//TODO : récupérer les solutions correspondant au probleme
-		System.out.println("Get solutions for problem");
-		return new ArrayList<Solution>();
+		Problem p = this.problemRepository.findOne(id);
+		return this.solutionService.getSolutionsForProblem(p);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/problems/{id}/solutions")
-	@ResponseBody void createSolutionForProblem(@PathVariable("id") long id){
-		//TODO : créer une solution pour le probleme correspondant
-		System.out.println("Create solution for problem");
+	@ResponseBody Solution createSolutionForProblem(@PathVariable("id") long id,@RequestParam("name") String name,
+			@RequestParam("description")String description ){
+		Problem p = this.problemRepository.findOne(id);
+		return this.solutionService.createSolution(name, description, p);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/values/{id}/valuescores")
-	@ResponseBody void createValueScore (@PathVariable ("id") long id){
-		//TODO : créer un valuescore pour la valeur correspondante
+	@ResponseBody ValueScore createValueScore (@PathVariable ("id") long id, @RequestParam double score, @RequestParam long userId){
+		//TODO : gerer l'authentification
 		System.out.println("Create score for value");
+		Value value = this.valueRepository.findOne(id);
+		User user = this.userRepository.findOne(userId);
+		return this.valueScoreService.createValueScore(score, value, user);
+		
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/versus/next")
@@ -139,9 +166,13 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/versus/{id}/versusresponses")
-	@ResponseBody void createVersusResponse (@PathVariable("id") long id){
+	@ResponseBody VersusResponse createVersusResponse (@PathVariable("id") long id, 
+			@RequestParam("response") double response, @RequestParam ("userId") long userId){
 		System.out.println("Post response for versus");
-		//TODO : créer un VersusResponses
+		Versus versus = this.versusRepository.findOne(id);
+		User user = this.userRepository.findOne(userId);
+		return this.versusResponseService.createVersusResponse(response, versus, user);
+		//TODO : authentification
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/solutionscores")
@@ -155,20 +186,29 @@ public class WebController {
 	@RequestMapping(method=RequestMethod.GET, value="/versus/{id}/comments")
 	@ResponseBody Collection<Comment> getCommentsForVersus(@PathVariable("id") Long id){
 		System.out.println("Get comments for versus");
-		//TODO : récupérer les commentaires pour le versus
-		return new ArrayList<Comment>();
+		Versus versus = this.versusRepository.findOne(id);
+		return this.commentService.getCommentsForVersus(versus);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/versus/{id}/comments")
-	@ResponseBody void createCommentForVersus(@PathVariable("id") Long id){
+	@ResponseBody Comment createCommentForVersus(@PathVariable("id") long id, @RequestParam("name") String name
+			, @RequestParam("content") String content, @RequestParam("userId")long userId){
 		System.out.println("Post comment for versus");
-		//TODO : créer un commentaire pour le versus
+		User user = this.userRepository.findOne(userId);
+		Versus versus = this.versusRepository.findOne(id);
+		return this.commentService.createComment(name, content, versus, user);
+		//TODO : auth
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/comments/{id}/comments")
-	@ResponseBody void respondToComment(@PathVariable("id") long id){
+	@ResponseBody Comment respondToComment(@PathVariable("id") long id, @RequestParam("name") String name
+			, @RequestParam("content") String content, @RequestParam("userId")long userId){
 		System.out.println("Post a response to a comment");
-		//TODO : créer le commentaire correspondant
+		User user = this.userRepository.findOne(userId);
+		//Versus versus = this.versusRepository.findOne(id);
+		//return this.commentService.createComment(name, content, versus, user);
+		//TODO : auth
+		return this.commentService.respondToComment(name, content, id, user);
 	}
 
 }

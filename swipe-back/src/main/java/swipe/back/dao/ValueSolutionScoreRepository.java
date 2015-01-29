@@ -18,7 +18,7 @@ public interface ValueSolutionScoreRepository extends CrudRepository<ValueSoluti
 	ValueSolutionScore findByUserAndValueAndSolution(User user, Value value,
 			Solution solution);
 
-	@Query("SELECT vsc FROM ValueSolutionScore vsc WHERE vsc.user = :user AND vsc.solution IN (SELECT s.id from solution s WHERE s.problem = :problem)")
+	@Query("SELECT vsc FROM ValueSolutionScore vsc WHERE vsc.user = :user AND vsc.solution IN (SELECT s.id from Solution s WHERE s.problem = :problem)")
 	Iterable<ValueSolutionScore> findForUserAndProblem(
 			@Param("user") User user, @Param("problem") Problem problem);
 

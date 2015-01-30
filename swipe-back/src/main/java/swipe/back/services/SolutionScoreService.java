@@ -34,6 +34,9 @@ public class SolutionScoreService implements ISolutionScoreService {
 	@Autowired
 	ProblemRepository problemRepository;
 
+	
+	
+	
 	@Override
 	public Iterable<SolutionScore> createSolutionScores(Problem problem,
 			User user) {
@@ -60,6 +63,14 @@ public class SolutionScoreService implements ISolutionScoreService {
 		}
 		
 		return solutionScores;
+	}
+
+
+
+
+	@Override
+	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user) {
+		return this.solutionScoreRepository.findForUserAndProblem(user, problem);
 	}
 
 }

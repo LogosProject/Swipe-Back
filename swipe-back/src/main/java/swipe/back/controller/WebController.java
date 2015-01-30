@@ -1,6 +1,5 @@
 package swipe.back.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -11,17 +10,14 @@ import java.util.Collection;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import swipe.back.dao.ProblemRepository;
 import swipe.back.dao.UserRepository;
@@ -44,6 +40,7 @@ import swipe.back.services.IUserService;
 import swipe.back.services.IValueScoreService;
 import swipe.back.services.IValueService;
 import swipe.back.services.IVersusResponseService;
+import swipe.back.services.IVersusService;
 
 //@EnableAutoConfiguration
 @Controller
@@ -84,6 +81,9 @@ public class WebController {
 	
 	@Autowired
 	ICommentService commentService;
+	
+	@Autowired
+	IVersusService versusService;
 	
 	@RequestMapping("/")
 	@ResponseBody
@@ -159,10 +159,12 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/versus/next")
-	@ResponseBody VersusResponse getNextVersusForProblem(@PathVariable("id") long id){
-		//TODO : récupérer le versus suivant pour le probleme donné
+	@ResponseBody Versus getNextVersusForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId){
 		System.out.println("Get next versus for problem");
-		return new VersusResponse();
+		Problem problem = this.problemRepository.findOne(id);
+		User user = this.userRepository.findOne(userId);
+		return this.versusService.getNextVersus(problem, user); //TODO : auth, verifier qu'on renvoie bien le bon truc
+		
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/versus/{id}/versusresponses")
@@ -176,10 +178,12 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/solutionscores")
-	@ResponseBody Collection<SolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id){
+	@ResponseBody Collection<SolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
 		System.out.println("Get SolutionScores for problem");
-		//TODO : récupérer les solutionscores pour le probleme correspondant
-		return new ArrayList<SolutionScore>();
+		Problem problem = this.problemRepository.findOne(id);
+		User user = this.userRepository.findOne(userId);
+		return (Collection<SolutionScore>) this.solutionScoreService.getSolutionScores(problem, user);
+		//TODO : auth, test
 	}
 	
 	

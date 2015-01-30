@@ -14,4 +14,6 @@ public interface ISolutionScoreService {
 	 */
 	public Iterable<SolutionScore> createSolutionScores(Problem problem, User user);
 
+	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user);
+	
 }

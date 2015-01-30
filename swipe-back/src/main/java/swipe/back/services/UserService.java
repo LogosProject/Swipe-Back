@@ -21,23 +21,23 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public boolean createUser(String email) {
+	public User createUser(String email, String userName) {
 		User userSameEmail = this.userRepository.findByEmail(email);
 		if ( userSameEmail == null ){
 			User newUser = new User(); //on l'aisse l'id s'autogénérer avec la méthode par défaut
 			//TODO : remplacer l'autogénération par une méthode plus robuste pour éviter les collisions
 			newUser.setEmail(email);
 			newUser.setPassword("");
-			newUser.setUsername(email);
+			newUser.setUsername(userName);
 			try{
 				this.userRepository.save(newUser);
 			}
 			catch(RuntimeException runtimeException){
-				return false;
+				return null;
 			}
-			return true;
+			return newUser;
 		}
-		return false;
+		return null;
 	}
 
 }

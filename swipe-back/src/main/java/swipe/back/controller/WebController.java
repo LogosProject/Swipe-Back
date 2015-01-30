@@ -98,10 +98,10 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/user")
-	@ResponseBody boolean createUser(@RequestParam(value="id", required=true) String id){
+	@ResponseBody User createUser(@RequestParam(value="mail", required=true) String email, 
+			@RequestParam("username") String userName){
 		System.out.println("Post user");
-		return this.userServices.createUser(id);
-		//l'id n'est pas l'id metier mais l'email
+		return this.userServices.createUser(email, userName);
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems")

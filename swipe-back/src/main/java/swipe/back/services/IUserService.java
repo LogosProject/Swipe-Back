@@ -16,5 +16,5 @@ public interface IUserService {
 	 * @param email
 	 * @return true si l'utilisateur est créé, false sinon
 	 */
-	public boolean createUser(String email);
+	public User createUser(String email, String userName);
 }

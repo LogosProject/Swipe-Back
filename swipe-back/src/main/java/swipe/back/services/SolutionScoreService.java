@@ -11,6 +11,7 @@ import swipe.back.dao.SolutionScoreRepository;
 import swipe.back.dao.ValueScoreRepository;
 import swipe.back.dao.ValueSolutionScoreRepository;
 import swipe.back.domain.Problem;
+import swipe.back.domain.Solution;
 import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
@@ -71,6 +72,20 @@ public class SolutionScoreService implements ISolutionScoreService {
 	@Override
 	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user) {
 		return this.solutionScoreRepository.findForUserAndProblem(user, problem);
+	}
+
+
+
+
+	@Override
+	public void initializeSolutionScore(User user, Solution solution) {
+		
+		
+		SolutionScore newSolutionScore = new SolutionScore();
+		newSolutionScore.setScore(0);
+		newSolutionScore.setSolution(solution);
+		newSolutionScore.setUser(user);
+		this.solutionScoreRepository.save(newSolutionScore);
 	}
 
 }

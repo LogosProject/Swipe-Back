@@ -1,15 +1,8 @@
 package swipe.back.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
-
-
-
-
-
-
-
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import swipe.back.dao.ProblemRepository;
+import swipe.back.dao.SolutionRepository;
 import swipe.back.dao.UserRepository;
 import swipe.back.dao.ValueRepository;
 import swipe.back.dao.VersusRepository;
@@ -85,11 +79,14 @@ public class WebController {
 	@Autowired
 	IVersusService versusService;
 	
+	@Autowired
+	SolutionRepository solutionRepository;
+	
 	@RequestMapping("/")
 	@ResponseBody
     String test() {
 		
-        return "Hello World2!";
+        return "It's alive !";
     }
 	
 	@RequestMapping(method=RequestMethod.GET, value="/user")
@@ -132,9 +129,6 @@ public class WebController {
 		return this.problemService.AddValue(id, value);
 	}
 	
-	
-	
-	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id:[\\d]+}/solutions")
 	@ResponseBody Collection<Solution> getSolutionsForProblem(@PathVariable("id") long id){
 		Problem p = this.problemRepository.findOne(id);
@@ -145,7 +139,28 @@ public class WebController {
 	@ResponseBody Solution createSolutionForProblem(@PathVariable("id") long id,@RequestParam("name") String name,
 			@RequestParam("description")String description ){
 		Problem p = this.problemRepository.findOne(id);
-		return this.solutionService.createSolution(name, description, p);
+		//créer solution
+		Solution solution = this.solutionService.createSolution(name, description, p);
+		return solution;
+	}
+	@RequestMapping(method=RequestMethod.POST, value="problems/{id}/solutions/select")
+	@ResponseBody void selectSolutionsForProblem(@PathVariable("id")long problemId, @RequestParam("userId") long userId,
+	@RequestParam("solutionsId") long[] solutionsId){
+		//initialiser les solution score de l'utilisateur pour les solutions associées à 0
+		// créer les versus correspondants s'ils n'existent pas
+		User user = this.userRepository.findOne(userId);
+		List<Solution> selectedSolutions = new ArrayList<Solution>();
+		if ( user != null){
+			for ( int i = 0 ; i < solutionsId.length; i ++ ){
+				Solution solution = this.solutionRepository.findOne(solutionsId[i]);
+				if ( solution != null ){
+					selectedSolutions.add(solution);
+					this.solutionScoreService.initializeSolutionScore(user, solution);
+				}
+			}
+		}
+		Problem problem = this.problemRepository.findOne(problemId);
+		this.versusService.createMissingVersuses(problem, selectedSolutions);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/values/{id}/valuescores")

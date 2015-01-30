@@ -1,6 +1,9 @@
 package swipe.back.services;
 
+import java.util.List;
+
 import swipe.back.domain.Problem;
+import swipe.back.domain.Solution;
 import swipe.back.domain.User;
 import swipe.back.domain.Versus;
 
@@ -14,4 +17,5 @@ public interface IVersusService {
 	 */
 	public Versus getNextVersus(Problem problem, User user);
 	
+	public void createMissingVersuses(Problem problem, List<Solution>solutions );
 }

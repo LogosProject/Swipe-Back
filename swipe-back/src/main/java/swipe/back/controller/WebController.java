@@ -33,6 +33,7 @@ import swipe.back.services.ISolutionService;
 import swipe.back.services.IUserService;
 import swipe.back.services.IValueScoreService;
 import swipe.back.services.IValueService;
+import swipe.back.services.IValueSolutionScoreService;
 import swipe.back.services.IVersusResponseService;
 import swipe.back.services.IVersusService;
 
@@ -71,6 +72,9 @@ public class WebController {
 	IVersusResponseService versusResponseService;
 	
 	@Autowired
+	IValueSolutionScoreService valueSolutionScoreService;
+	
+	@Autowired
 	VersusRepository versusRepository;
 	
 	@Autowired
@@ -81,6 +85,7 @@ public class WebController {
 	
 	@Autowired
 	SolutionRepository solutionRepository;
+
 	
 	@RequestMapping("/")
 	@ResponseBody
@@ -197,6 +202,10 @@ public class WebController {
 		System.out.println("Get SolutionScores for problem");
 		Problem problem = this.problemRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
+		
+		valueSolutionScoreService.createValueSolutionScores(problem, user);
+		//solutionScoreService.createSolutionScores(problem, user);
+		
 		return (Collection<SolutionScore>) this.solutionScoreService.getSolutionScores(problem, user);
 		//TODO : auth, test
 	}

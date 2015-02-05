@@ -1,9 +1,8 @@
 package swipe.back.services;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import swipe.back.dao.ProblemRepository;
 import swipe.back.dao.ValueRepository;
@@ -20,6 +19,7 @@ import swipe.back.domain.ValueSolutionScore;
 import swipe.back.domain.Versus;
 import swipe.back.domain.VersusResponse;
 
+@Service
 public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	@Autowired
@@ -42,7 +42,7 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	@Override
 	public double calculateScore(ValueSolutionScore valueSolutionScore) {
-		double score = -1;
+		double score = 5;
 		
 		// TODO Code métier		
 		
@@ -56,27 +56,24 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 		//Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
 		
-		Iterable<Value> values = problem.getValues();
+		/*Iterable<Value> values = problem.getValues();
 		Iterable<ValueScore> valueScores = new ArrayList<ValueScore>();
 		for (Value value : values ){
 			((ArrayList<ValueScore>) valueScores).add(valueScoreRepository.findByUserAndValue(user, value));
-		}
+		}*/
 		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
 		ArrayList<ValueSolutionScore> valueSolutionScores = new ArrayList<ValueSolutionScore>();
 
-		for (ValueScore valueScore : valueScores) {
-			Value value = valueScore.getValue();
-			for(VersusResponse versusResponse : versusResponses) {
-				Versus versus = versusResponse.getVersus();
-				ValueSolutionScore valueSolutionScore1 = getOrCreateValueSolutionScore(user, value, versus.getSolution1());
-				ValueSolutionScore valueSolutionScore2 = getOrCreateValueSolutionScore(user, value, versus.getSolution2());
-				
-				calculateScore(valueSolutionScore1);
-				calculateScore(valueSolutionScore2);
-				
-				valueSolutionScores.add(valueSolutionScore1);
-				valueSolutionScores.add(valueSolutionScore2);
-			}
+		for(VersusResponse versusResponse : versusResponses) {
+			Versus versus = versusResponse.getVersus();
+			ValueSolutionScore valueSolutionScore1 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution1());
+			ValueSolutionScore valueSolutionScore2 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution2());
+			
+			calculateScore(valueSolutionScore1);
+			calculateScore(valueSolutionScore2);
+			
+			valueSolutionScores.add(valueSolutionScore1);
+			valueSolutionScores.add(valueSolutionScore2);
 		}
 		
 		return valueSolutionScores;

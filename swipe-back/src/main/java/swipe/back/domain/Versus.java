@@ -22,18 +22,21 @@ public class Versus {
 	private Solution solution1;
 	@OneToOne
 	private Solution solution2;
+	@OneToOne
+	private Value value;
 	
-	public Versus(){
+	public Versus() {
 		
 	}
 
 	public Versus(long id, Problem problem, Solution solution1,
-			Solution solution2) {
+			Solution solution2, Value value) {
 		super();
 		this.id = id;
 		this.problem = problem;
 		this.solution1 = solution1;
 		this.solution2 = solution2;
+		this.value = value;
 	}
 	
 	

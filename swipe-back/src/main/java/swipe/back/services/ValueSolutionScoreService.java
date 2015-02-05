@@ -42,7 +42,7 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	@Override
 	public double calculateScore(ValueSolutionScore valueSolutionScore) {
-		double score = -1;
+		double score = 5;
 		
 		// TODO Code métier		
 		
@@ -56,17 +56,16 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 		//Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
 		
-		Iterable<Value> values = problem.getValues();
+		/*Iterable<Value> values = problem.getValues();
 		Iterable<ValueScore> valueScores = new ArrayList<ValueScore>();
 		for (Value value : values ){
 			((ArrayList<ValueScore>) valueScores).add(valueScoreRepository.findByUserAndValue(user, value));
-		}
+		}*/
 		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
 		ArrayList<ValueSolutionScore> valueSolutionScores = new ArrayList<ValueSolutionScore>();
 
 		for(VersusResponse versusResponse : versusResponses) {
 			Versus versus = versusResponse.getVersus();
-			
 			ValueSolutionScore valueSolutionScore1 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution1());
 			ValueSolutionScore valueSolutionScore2 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution2());
 			

@@ -31,7 +31,7 @@ public class VersusService implements IVersusService {
 	public Versus getNextVersus(Problem problem, User user) {
 		//1. récupérer tous les versus du probleme
 		//2. recupérer tous ls versusresponse de l'utilisateurcorresponant à ces versus
-		//3. en choisir un element de 1 qui n'est pas ans 2 et le renvoyer
+		//3. en choisir un element de 1 qui n'est pas dans 2 et le renvoyer
 		Collection<Versus> allVersuses = (Collection<Versus>) this.versusRepository.findByProblem(problem);
 		Collection<VersusResponse> versusResponses = (Collection<VersusResponse>) this.versusResposeRepository.findForUserAndProblem(user, problem);
 		Collection<Versus> respondedVersuses = new ArrayList<Versus>();
@@ -39,8 +39,14 @@ public class VersusService implements IVersusService {
 			respondedVersuses.add(versusResponse.getVersus());
 		}
 		allVersuses.removeAll(respondedVersuses);
-		Versus nextVersus = allVersuses.iterator().next();
-		return nextVersus;
+		Iterator<Versus> versusIterator = allVersuses.iterator();
+		if ( versusIterator.hasNext()){
+			return versusIterator.next();
+		}
+		else{
+			return null;
+		}
+		
 	}
 
 	@Override

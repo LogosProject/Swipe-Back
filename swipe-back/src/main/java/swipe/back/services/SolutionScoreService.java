@@ -1,12 +1,14 @@
 package swipe.back.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import swipe.back.dao.ProblemRepository;
+import swipe.back.dao.SolutionRepository;
 import swipe.back.dao.SolutionScoreRepository;
 import swipe.back.dao.ValueScoreRepository;
 import swipe.back.dao.ValueSolutionScoreRepository;
@@ -34,6 +36,9 @@ public class SolutionScoreService implements ISolutionScoreService {
 	
 	@Autowired
 	ProblemRepository problemRepository;
+	
+	@Autowired
+	SolutionRepository solutionRepository;
 
 	
 	
@@ -71,6 +76,20 @@ public class SolutionScoreService implements ISolutionScoreService {
 
 	@Override
 	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user) {
+		//obtenir toutes les solutions du probleme
+		Collection<Solution> solutions = this.solutionRepository.findByProblem(problem);
+		//pour chaque solution, obtenir les valuesolutionscore correspondant à l'utilisateur, la solution et chaque valeurs du probleme
+		
+		for ( Solution solution : solutions ){
+			double score = 0;
+			for ( Value value : problem.getValues() ){
+				ValueSolutionScore valueSolutionScore = this.valueSolutionScoreRepository.findByUserAndValueAndSolution(user, value, solution);
+				score += valueSolutionScore.getScore();
+			}
+			SolutionScore solutionScore = this.solutionScoreRepository.findByUserAndSolution(user, solution);
+			solutionScore.setScore(score);
+			this.solutionScoreRepository.save(solutionScore);
+		}
 		return this.solutionScoreRepository.findForUserAndProblem(user, problem);
 	}
 

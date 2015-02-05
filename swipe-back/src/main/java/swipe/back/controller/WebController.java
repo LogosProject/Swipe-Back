@@ -24,6 +24,7 @@ import swipe.back.domain.SolutionScore;
 import swipe.back.domain.User;
 import swipe.back.domain.Value;
 import swipe.back.domain.ValueScore;
+import swipe.back.domain.ValueSolutionScore;
 import swipe.back.domain.Versus;
 import swipe.back.domain.VersusResponse;
 import swipe.back.services.ICommentService;
@@ -198,16 +199,13 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/solutionscores")
-	@ResponseBody Collection<SolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
+	@ResponseBody Collection<ValueSolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
 		System.out.println("Get SolutionScores for problem");
 		Problem problem = this.problemRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
-		
-		valueSolutionScoreService.createValueSolutionScores(problem, user);
-		//solutionScoreService.createSolutionScores(problem, user);
-		
-		return (Collection<SolutionScore>) this.solutionScoreService.getSolutionScores(problem, user);
-		//TODO : auth, test
+		//TODO
+		return (Collection<ValueSolutionScore>) valueSolutionScoreService.createValueSolutionScores(problem, user);
+		//return (Collection<SolutionScore>) solutionScoreService.createSolutionScores(problem, user);
 	}
 	
 	

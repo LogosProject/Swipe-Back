@@ -72,6 +72,9 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 			calculateScore(valueSolutionScore1);
 			calculateScore(valueSolutionScore2);
 			
+			valueSolutionScoreRepository.save(valueSolutionScore1);
+			valueSolutionScoreRepository.save(valueSolutionScore2);
+			
 			valueSolutionScores.add(valueSolutionScore1);
 			valueSolutionScores.add(valueSolutionScore2);
 		}

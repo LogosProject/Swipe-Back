@@ -42,9 +42,10 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	@Override
 	public double calculateScore(ValueSolutionScore valueSolutionScore) {
-		double score = 5;
+		double score = 0;
 		
-		// TODO Code métier		
+		
+		
 		
 		valueSolutionScore.setScore(score);
 		return score;
@@ -54,13 +55,8 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	public Iterable<ValueSolutionScore> createValueSolutionScores(
 			Problem problem, User user) {
 	
-		//Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
+		Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
 		
-		/*Iterable<Value> values = problem.getValues();
-		Iterable<ValueScore> valueScores = new ArrayList<ValueScore>();
-		for (Value value : values ){
-			((ArrayList<ValueScore>) valueScores).add(valueScoreRepository.findByUserAndValue(user, value));
-		}*/
 		Iterable<VersusResponse> versusResponses = versusResponseRepository.findForUserAndProblem(user, problem);
 		ArrayList<ValueSolutionScore> valueSolutionScores = new ArrayList<ValueSolutionScore>();
 
@@ -69,8 +65,8 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 			ValueSolutionScore valueSolutionScore1 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution1());
 			ValueSolutionScore valueSolutionScore2 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution2());
 			
-			calculateScore(valueSolutionScore1);
-			calculateScore(valueSolutionScore2);
+			valueSolutionScore1.setScore(0);
+			valueSolutionScore2.setScore(0);
 			
 			valueSolutionScoreRepository.save(valueSolutionScore1);
 			valueSolutionScoreRepository.save(valueSolutionScore2);
@@ -79,7 +75,63 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 			valueSolutionScores.add(valueSolutionScore2);
 		}
 		
+		return computePointsValueSolutionScores(valueSolutionScores, versusResponses, valueScores);
+	}
+	
+	public Iterable<ValueSolutionScore> computePointsValueSolutionScores(Iterable<ValueSolutionScore> valueSolutionScores,
+												Iterable<VersusResponse> versusResponses, Iterable<ValueScore> valueScores) {
+		
+		ArrayList<Solution> solutions = new ArrayList<Solution>();
+		
+		double alpha = 0.1;
+		
+		for (ValueScore valueScore : valueScores) {
+			Value value = valueScore.getValue();
+			for (int i = 0; i<100; i++) {
+				for (VersusResponse versusResponse : versusResponses) {
+					Versus versus = versusResponse.getVersus();
+					ValueSolutionScore sria = this.getOneVSS(valueSolutionScores, value, versus.getSolution1());
+					ValueSolutionScore srib = this.getOneVSS(valueSolutionScores, value, versus.getSolution2());
+					
+					double p = 10/(0.01 + Math.exp(sria.getScore() - srib.getScore()) ) - 5;
+					double err = p - versusResponse.getResponse();
+					
+					sria.setScore(sria.getScore() + alpha*err);
+					srib.setScore(srib.getScore() - alpha*err);
+					
+					// Ajouter les solutions envisagées à la liste
+					if (!solutions.contains(versus.getSolution1())) {
+						solutions.add(versus.getSolution1());
+					}
+					if (!solutions.contains(versus.getSolution2())) {
+						solutions.add(versus.getSolution2());
+					}
+				}
+			}
+			double squareSumScore = 0;
+			
+			for (ValueSolutionScore valueSolutionScore : valueSolutionScores) {
+				squareSumScore += valueSolutionScore.getScore() * valueSolutionScore.getScore();
+			}
+			
+			double std = Math.sqrt(squareSumScore);
+					
+			for (Solution solution : solutions) {
+				ValueSolutionScore sri = this.getOneVSS(valueSolutionScores, value, solution);
+				sri.setScore(sri.getScore() / std);
+			}
+		}
+		
 		return valueSolutionScores;
+	}
+	
+	public ValueSolutionScore getOneVSS(Iterable<ValueSolutionScore> valueSolutionScores, Value value, Solution solution) {
+		for (ValueSolutionScore valueSolutionScore : valueSolutionScores) {
+			if (valueSolutionScore.getValue() == value && valueSolutionScore.getSolution() == solution) {
+				return valueSolutionScore;
+			}
+		}
+		return null;
 	}
 	
 	public ValueSolutionScore getOrCreateValueSolutionScore(User user, Value value, Solution solution) {

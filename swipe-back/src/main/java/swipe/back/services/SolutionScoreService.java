@@ -64,7 +64,7 @@ public class SolutionScoreService implements ISolutionScoreService {
 			for (ValueScore valueScore : valueScores) {
 				ValueSolutionScore valueSolutionScore = valueSolutionScoreRepository.findByUserAndValueAndSolution(user, valueScore.getValue(), solutionScore.getSolution());
 				if (valueSolutionScore != null) {
-					double scoreToAdd = solutionScore.getScore()*valueSolutionScore.getScore();
+					double scoreToAdd = valueScore.getScore()*valueSolutionScore.getScore();
 					solutionScore.setScore(solutionScore.getScore()+scoreToAdd);
 					solutionScoreRepository.save(solutionScore);
 				}

@@ -200,13 +200,13 @@ public class WebController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/solutionscores")
-	@ResponseBody Collection<ValueSolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
+	@ResponseBody Collection<SolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
 		System.out.println("Get SolutionScores for problem");
 		Problem problem = this.problemRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
-		//TODO
-		return (Collection<ValueSolutionScore>) valueSolutionScoreService.createValueSolutionScores(problem, user);
-		//return (Collection<SolutionScore>) solutionScoreService.createSolutionScores(problem, user);
+		//TODO : return both
+		/*return (Collection<ValueSolutionScore>) */valueSolutionScoreService.createValueSolutionScores(problem, user);
+		return (Collection<SolutionScore>) solutionScoreService.fillSolutionScores(problem, user);
 	}
 	
 	

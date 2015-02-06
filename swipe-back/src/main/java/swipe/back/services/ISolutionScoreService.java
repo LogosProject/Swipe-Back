@@ -13,9 +13,7 @@ public interface ISolutionScoreService {
 	 * @param user
 	 * @return
 	 */
-	public Iterable<SolutionScore> createSolutionScores(Problem problem, User user);
-
-	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user);
+	public Iterable<SolutionScore> fillSolutionScores(Problem problem, User user);
 	
 	/**
 	 * Crée un solutionScore pour un utilisateur et une solution donnée, avec un score nul

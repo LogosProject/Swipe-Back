@@ -39,12 +39,9 @@ public class SolutionScoreService implements ISolutionScoreService {
 	
 	@Autowired
 	SolutionRepository solutionRepository;
-
-	
-	
 	
 	@Override
-	public Iterable<SolutionScore> createSolutionScores(Problem problem,
+	public Iterable<SolutionScore> fillSolutionScores(Problem problem,
 			User user) {
 		
 		Iterable<SolutionScore> solutionScores = solutionScoreRepository.findForUserAndProblem(user, problem);
@@ -64,37 +61,13 @@ public class SolutionScoreService implements ISolutionScoreService {
 				if (valueSolutionScore != null) {
 					double scoreToAdd = solutionScore.getScore()*valueSolutionScore.getScore();
 					solutionScore.setScore(solutionScore.getScore()+scoreToAdd);
+					solutionScoreRepository.save(solutionScore);
 				}
 			}
 		}
 		
 		return solutionScores;
 	}
-
-
-
-
-	@Override
-	public Iterable<SolutionScore> getSolutionScores(Problem problem, User user) {
-		//obtenir toutes les solutions du probleme
-		Collection<Solution> solutions = this.solutionRepository.findByProblem(problem);
-		//pour chaque solution, obtenir les valuesolutionscore correspondant à l'utilisateur, la solution et chaque valeurs du probleme
-		
-		for ( Solution solution : solutions ){
-			double score = 0;
-			for ( Value value : problem.getValues() ){
-				ValueSolutionScore valueSolutionScore = this.valueSolutionScoreRepository.findByUserAndValueAndSolution(user, value, solution);
-				score += valueSolutionScore.getScore();
-			}
-			SolutionScore solutionScore = this.solutionScoreRepository.findByUserAndSolution(user, solution);
-			solutionScore.setScore(score);
-			this.solutionScoreRepository.save(solutionScore);
-		}
-		return this.solutionScoreRepository.findForUserAndProblem(user, problem);
-	}
-
-
-
 
 	@Override
 	public void initializeSolutionScore(User user, Solution solution) {

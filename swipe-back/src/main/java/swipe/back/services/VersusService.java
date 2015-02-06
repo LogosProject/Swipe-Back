@@ -77,6 +77,7 @@ public class VersusService implements IVersusService {
 			solutionPair.add(existingVersus.getSolution2());
 			existingMatches.add(solutionPair);
 		}
+		
 		neededMatches.removeAll(existingMatches);
 		for ( Set<Solution> solutionPair : neededMatches ){
 			for ( Value value : problem.getValues()){

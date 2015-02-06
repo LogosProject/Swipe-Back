@@ -2,7 +2,9 @@ package swipe.back.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -156,9 +158,12 @@ public class WebController {
 		// créer les versus correspondants s'ils n'existent pas
 		System.out.println("select solutions");
 		User user = this.userRepository.findOne(userId);
+
 		List<Solution> selectedSolutions = new ArrayList<Solution>();
+		System.out.println("user id : "+userId);
 		if ( user != null){
 			for ( int i = 0 ; i < solutionsId.length; i ++ ){
+				System.out.println("solutionsId " + solutionsId[i]);
 				Solution solution = this.solutionRepository.findOne(solutionsId[i]);
 				if ( solution != null ){
 					selectedSolutions.add(solution);
@@ -176,6 +181,9 @@ public class WebController {
 		System.out.println("Create score for value");
 		Value value = this.valueRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
+		if ( user == null ){
+			return null;
+		}
 		return this.valueScoreService.createValueScore(score, value, user);
 		
 	}
@@ -185,6 +193,9 @@ public class WebController {
 		System.out.println("Get next versus for problem");
 		Problem problem = this.problemRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
+		if ( user == null ){
+			return null;
+		}
 		return this.versusService.getNextVersus(problem, user); //TODO : auth, verifier qu'on renvoie bien le bon truc
 		
 	}
@@ -195,18 +206,27 @@ public class WebController {
 		System.out.println("Post response for versus");
 		Versus versus = this.versusRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
+		if ( user == null ){
+			return null;
+		}
 		return this.versusResponseService.createVersusResponse(response, versus, user);
 		//TODO : authentification
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/problems/{id}/solutionscores")
-	@ResponseBody Collection<SolutionScore> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
+	@ResponseBody Map<String,Object> getSolutionScoreForProblem(@PathVariable("id") long id, @RequestParam("userId") long userId ){
 		System.out.println("Get SolutionScores for problem");
 		Problem problem = this.problemRepository.findOne(id);
 		User user = this.userRepository.findOne(userId);
-		//TODO : return both
-		/*return (Collection<ValueSolutionScore>) */valueSolutionScoreService.createValueSolutionScores(problem, user);
-		return (Collection<SolutionScore>) solutionScoreService.fillSolutionScores(problem, user);
+		if ( user == null ){
+			return null;
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("valueSolutionScore",valueSolutionScoreService.createValueSolutionScores(problem, user));
+		result.put("solutionScores", solutionScoreService.fillSolutionScores(problem, user));
+		/*return (Collection<ValueSolutionScore>) *///valueSolutionScoreService.createValueSolutionScores(problem, user);
+		//return (Collection<SolutionScore>) solutionScoreService.fillSolutionScores(problem, user);
+		return result;
 	}
 	
 	
@@ -222,6 +242,9 @@ public class WebController {
 			, @RequestParam("content") String content, @RequestParam("userId")long userId){
 		System.out.println("Post comment for versus");
 		User user = this.userRepository.findOne(userId);
+		if ( user == null ){
+			return null;
+		}
 		Versus versus = this.versusRepository.findOne(id);
 		return this.commentService.createComment(name, content, versus, user);
 		//TODO : auth
@@ -232,6 +255,9 @@ public class WebController {
 			, @RequestParam("content") String content, @RequestParam("userId")long userId){
 		System.out.println("Post a response to a comment");
 		User user = this.userRepository.findOne(userId);
+		if ( user == null ){
+			return null;
+		}
 		//Versus versus = this.versusRepository.findOne(id);
 		//return this.commentService.createComment(name, content, versus, user);
 		//TODO : auth

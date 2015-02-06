@@ -16,10 +16,18 @@ public class ValueScoreService implements IValueScoreService {
 
 	@Override
 	public ValueScore createValueScore(double score, Value value, User user) {
-		ValueScore valueScore = new ValueScore();
-		valueScore.setScore(score);
-		valueScore.setUser(user);
-		valueScore.setValue(value);
+		ValueScore valueScore; 
+		if ( this.valueScoreRepository.findByUserAndValue(user, value) !=null ){
+			valueScore = this.valueScoreRepository.findByUserAndValue(user, value);
+			valueScore.setScore(score);
+			
+		}
+		else{
+			valueScore = new ValueScore();
+			valueScore.setScore(score);
+			valueScore.setUser(user);
+			valueScore.setValue(value);
+		}
 		this.valueScoreRepository.save(valueScore);
 		return valueScore;
 	}

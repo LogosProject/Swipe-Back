@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import swipe.back.dao.ProblemRepository;
 import swipe.back.dao.SolutionRepository;
 import swipe.back.dao.SolutionScoreRepository;
+import swipe.back.dao.ValueRepository;
 import swipe.back.dao.ValueScoreRepository;
 import swipe.back.dao.ValueSolutionScoreRepository;
 import swipe.back.domain.Problem;
@@ -35,6 +36,10 @@ public class SolutionScoreService implements ISolutionScoreService {
 	ValueScoreRepository valueScoreRepository;
 	
 	@Autowired
+	ValueRepository valueRepository;
+	
+	
+	@Autowired
 	ProblemRepository problemRepository;
 	
 	@Autowired
@@ -46,7 +51,7 @@ public class SolutionScoreService implements ISolutionScoreService {
 		
 		Iterable<SolutionScore> solutionScores = solutionScoreRepository.findForUserAndProblem(user, problem);
 		
-		Iterable<Value> values = problem.getValues();
+		Iterable<Value> values = valueRepository.findByProblem(problem);
 		
 		//Iterable<ValueScore> valueScores = valueScoreRepository.findForUserAndProblem(user, problem);
 		Iterable<ValueScore> valueScores = new ArrayList<ValueScore>();

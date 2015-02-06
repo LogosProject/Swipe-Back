@@ -17,7 +17,7 @@ public interface ValueScoreRepository extends CrudRepository<ValueScore, Long> {
 
 	ValueScore findByUserAndValue(User user, Value value);
 	
-	@Query("SELECT vs FROM ValueScore vs WHERE vs.user = :user AND vs.value = (SELECT v from Value v WHERE v.problem = :problem)")
+	@Query("SELECT vs FROM ValueScore vs WHERE vs.user = :user AND vs.value IN (SELECT v from Value v WHERE v.problem = :problem)")
 	Iterable<ValueScore> findForUserAndProblem(
 			@Param("user") User user, @Param("problem") Problem problem);
 

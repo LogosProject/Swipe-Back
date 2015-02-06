@@ -10,4 +10,6 @@ import swipe.back.domain.Value;
 
 @Repository
 public interface ValueRepository extends CrudRepository<Value, Long> {
+
+	Iterable<Value> findByProblem(Problem problem);
 }

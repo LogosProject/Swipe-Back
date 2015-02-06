@@ -20,7 +20,7 @@ public class Solution {
 	private long id;
 	private String name;
 	private String description;
-	@OneToOne
+	@ManyToOne
 	private Problem problem;
 	
 	public Solution(){

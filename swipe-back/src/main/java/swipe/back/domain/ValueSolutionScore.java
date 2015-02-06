@@ -17,11 +17,11 @@ public class ValueSolutionScore {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	private double score;
-	@OneToOne
+	@ManyToOne
 	private Value value;
-	@OneToOne
+	@ManyToOne
 	private User user;
-	@OneToOne
+	@ManyToOne
 	private Solution solution;
 	
 	public ValueSolutionScore(){

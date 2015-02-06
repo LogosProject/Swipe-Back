@@ -130,8 +130,9 @@ public class WebController {
 	     
 	@RequestMapping(method=RequestMethod.POST, value="/problems/{id}/values")
 	@ResponseBody Value createValueForProblem(@PathVariable("id") long id, @RequestParam("name") String name, @RequestParam("description") String description){
+		Problem p = this.problemRepository.findOne(id);
 		System.out.println("Post value for problem");
-		Value value = this.valueService.createValue(name, description);
+		Value value = this.valueService.createValue(name, description, p);
 		return this.problemService.AddValue(id, value);
 	}
 	

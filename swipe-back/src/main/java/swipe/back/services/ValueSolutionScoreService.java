@@ -1,6 +1,8 @@
 package swipe.back.services;
 import java.util.ArrayList;
 
+import lombok.extern.java.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,11 +67,8 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 			ValueSolutionScore valueSolutionScore1 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution1());
 			ValueSolutionScore valueSolutionScore2 = this.getOrCreateValueSolutionScore(user, versus.getValue(), versus.getSolution2());
 			
-			valueSolutionScore1.setScore(0);
-			valueSolutionScore2.setScore(0);
-			
-			valueSolutionScoreRepository.save(valueSolutionScore1);
-			valueSolutionScoreRepository.save(valueSolutionScore2);
+			//valueSolutionScore1.setScore(1);
+			//valueSolutionScore2.setScore(1);
 			
 			valueSolutionScores.add(valueSolutionScore1);
 			valueSolutionScores.add(valueSolutionScore2);
@@ -80,15 +79,17 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 	
 	public Iterable<ValueSolutionScore> computePointsValueSolutionScores(Iterable<ValueSolutionScore> valueSolutionScores,
 												Iterable<VersusResponse> versusResponses, Iterable<ValueScore> valueScores) {
-		
+		System.out.println("BEGIN");
 		ArrayList<Solution> solutions = new ArrayList<Solution>();
 		
 		double alpha = 0.1;
 		
 		for (ValueScore valueScore : valueScores) {
 			Value value = valueScore.getValue();
-			for (int i = 0; i<100; i++) {
+			System.out.println("value loop");
+			for (int i = 0; i<1000; i++) {
 				for (VersusResponse versusResponse : versusResponses) {
+					System.out.println("versus" + i);
 					Versus versus = versusResponse.getVersus();
 					ValueSolutionScore sria = this.getOneVSS(valueSolutionScores, value, versus.getSolution1());
 					ValueSolutionScore srib = this.getOneVSS(valueSolutionScores, value, versus.getSolution2());
@@ -108,6 +109,12 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 					}
 				}
 			}
+			
+			// persister les valeurs
+			for (ValueSolutionScore valueSolutionScore : valueSolutionScores) {
+				valueSolutionScoreRepository.save(valueSolutionScore);
+			}
+			
 			double squareSumScore = 0;
 			
 			for (ValueSolutionScore valueSolutionScore : valueSolutionScores) {
@@ -119,9 +126,11 @@ public class ValueSolutionScoreService implements IValueSolutionScoreService {
 			for (Solution solution : solutions) {
 				ValueSolutionScore sri = this.getOneVSS(valueSolutionScores, value, solution);
 				sri.setScore(sri.getScore() / std);
+				System.out.println("FINAL SCORE : " + sri.getScore());
+				valueSolutionScoreRepository.save(sri);
 			}
 		}
-		
+		System.out.println("END");
 		return valueSolutionScores;
 	}
 	

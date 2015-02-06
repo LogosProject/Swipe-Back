@@ -153,6 +153,7 @@ public class WebController {
 	@RequestParam("solutionsId") long[] solutionsId){
 		//initialiser les solution score de l'utilisateur pour les solutions associées à 0
 		// créer les versus correspondants s'ils n'existent pas
+		System.out.println("select solutions");
 		User user = this.userRepository.findOne(userId);
 		List<Solution> selectedSolutions = new ArrayList<Solution>();
 		if ( user != null){

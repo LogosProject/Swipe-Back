@@ -15,6 +15,7 @@ import swipe.back.dao.VersusResponseRepository;
 import swipe.back.domain.Problem;
 import swipe.back.domain.Solution;
 import swipe.back.domain.User;
+import swipe.back.domain.Value;
 import swipe.back.domain.Versus;
 import swipe.back.domain.VersusResponse;
 
@@ -78,12 +79,15 @@ public class VersusService implements IVersusService {
 		}
 		neededMatches.removeAll(existingMatches);
 		for ( Set<Solution> solutionPair : neededMatches ){
-			Versus newVersus = new Versus();
-			newVersus.setProblem(problem);
-			Iterator<Solution> newSolutions = solutionPair.iterator();
-			newVersus.setSolution1(newSolutions.next());
-			newVersus.setSolution2(newSolutions.next());
-			newVersuses.add(newVersus);
+			for ( Value value : problem.getValues()){
+				Versus newVersus = new Versus();
+				newVersus.setProblem(problem);
+				Iterator<Solution> newSolutions = solutionPair.iterator();
+				newVersus.setSolution1(newSolutions.next());
+				newVersus.setSolution2(newSolutions.next());
+				newVersus.setValue(value);
+				newVersuses.add(newVersus);
+			}
 		}
 		this.versusRepository.save(newVersuses);
 	}

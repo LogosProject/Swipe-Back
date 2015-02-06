@@ -17,9 +17,9 @@ public class ValueScore {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	private double score;
-	@OneToOne
+	@ManyToOne
 	private Value value;
-	@OneToOne
+	@ManyToOne
 	private User user;
 	
 	public ValueScore ( ){

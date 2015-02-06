@@ -22,16 +22,16 @@ public class Problem {
 	private String description;
 	@OneToMany
 	private Collection<Value> values;
+
 	public Problem(){
 		
 	}
 
-	public Problem(long id, String name, String description, Collection<Value> values) {
+	public Problem(long id, String name, String description) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.values = values;
 	}
 	
 	

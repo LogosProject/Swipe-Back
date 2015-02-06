@@ -23,11 +23,11 @@ public class Comment {
 	private String name;
 	private DateTime dateTime; 
 	private String content;
-	@OneToOne
+	@ManyToOne
 	private Versus versus;
-	@OneToOne
+	@ManyToOne
 	private User user;
-	@OneToOne
+	@ManyToOne
 	private Comment comment;
 	
 	public Comment(){

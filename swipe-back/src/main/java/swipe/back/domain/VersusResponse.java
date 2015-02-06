@@ -20,9 +20,9 @@ public class VersusResponse {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	private double response;
-	@OneToOne
+	@ManyToOne
 	private Versus versus;
-	@OneToOne
+	@ManyToOne
 	private User user;
 	
 	public VersusResponse(){

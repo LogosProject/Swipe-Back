@@ -16,13 +16,13 @@ public class Versus {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
-	@OneToOne
+	@ManyToOne
 	private Problem problem;
-	@OneToOne
+	@ManyToOne
 	private Solution solution1;
-	@OneToOne
+	@ManyToOne
 	private Solution solution2;
-	@OneToOne
+	@ManyToOne
 	private Value value;
 	
 	public Versus() {
